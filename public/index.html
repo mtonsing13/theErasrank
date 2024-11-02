@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Sequence with Album Display</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .page { display: none; text-align: center; }
+    .visible { display: block; }
+    #albums { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .album { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .album-name { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <!-- Pages -->
+  <div id="page1" class="page visible">Are you ready? <button onclick="startSequence()">Yes</button></div>
+  <div id="page2" class="page">1</div>
+  <div id="page3" class="page">2</div>
+  <div id="page4" class="page">3</div>
+  <div id="page5" class="page">Let's Go</div>
+  <div id="finalPage" class="page">
+    <h1>Top Taylor Swift Albums</h1>
+    <div id="albums"></div>
+  </div>
+
+  <script>
+    // Function to handle page transitions
+    function startSequence() {
+      const pages = ["page1", "page2", "page3", "page4", "page5", "finalPage"];
+      let currentPage = 0;
+
+      const nextPage = () => {
+        document.getElementById(pages[currentPage]).classList.remove("visible");
+        currentPage++;
+        if (currentPage < pages.length) {
+          document.getElementById(pages[currentPage]).classList.add("visible");
+
+          // Load albums when reaching the final page
+          if (pages[currentPage] === "finalPage") {
+            fetchAndDisplayAlbums();
+          } else {
+            setTimeout(nextPage, 800);
+          }
+        }
+      };
+
+      setTimeout(nextPage, 800);
+    }
+
+    // Fetch and display albums on the final page
+    async function fetchAndDisplayAlbums() {
+      try {
+        const response = await fetch('/api/top-taylor-swift-albums');
+        const albums = await response.json();
+        const albumsContainer = document.getElementById('albums');
+        albumsContainer.innerHTML = ''; // Clear existing content
+
+        albums.forEach(album => {
+          const albumElement = document.createElement('div');
+          albumElement.className = 'album';
+          albumElement.innerHTML = `<span class="album-name">${album.name}</span> <span class="album-count">Count: ${album.count}</span>`;
+          albumsContainer.appendChild(albumElement);
+        });
+      } catch (error) {
+        console.error('Error fetching albums:', error);
+      }
+    }
+  </script>
+</body>
+</html>
