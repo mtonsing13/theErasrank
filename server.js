@@ -10,6 +10,7 @@ console.log(process.env)
 
 //const client_id = '92e5575fa0304bed8bd33b022d248cad';
 //const client_secret = '009c458cafe54c3f9ddd58899fa35d70';
+//new to commit
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
 const redirect_uri = 'http://localhost:8888/callback';
