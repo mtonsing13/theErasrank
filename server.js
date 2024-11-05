@@ -5,7 +5,7 @@ const querystring = require('querystring');
 const path = require('path');
 const app = express();
 
-console.log(process.env)
+//console.log(process.env)
 
 //new to commit
 const client_id = process.env.CLIENT_ID;
@@ -96,6 +96,21 @@ app.get('/callback', (req, res) => {
    });
 });
 
+// Route to get the user's display name
+app.get('/api/user-profile', async (req, res) => {
+  try {
+    const response = await axios.get('https://api.spotify.com/v1/me', {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
+    const displayName = response.data.display_name;
+    res.json({ displayName });
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ error: 'Failed to fetch user profile' });
+  }
+});
 
 // Helper function to fetch user's top tracks with an extended time range
 async function fetchTopTracks(time_range = 'long_term') {
@@ -219,7 +234,7 @@ app.get('/api/top-taylor-swift-albums', async (req, res) => {
 
 
     res.json(sortedAlbums);
-    console.log(sortedAlbums);
+    //console.log(sortedAlbums);
   } catch (error) {
     console.error('Error fetching top albums:', error);
     res.status(500).json({ error: 'Failed to fetch albums' });

@@ -14,21 +14,34 @@
   </style>
 </head>
 <body>
-  <!-- Pages -->
   <div id="page1" class="page visible">Are you ready? <button onclick="startSequence()">Yes</button></div>
   <div id="page2" class="page">1</div>
   <div id="page3" class="page">2</div>
   <div id="page4" class="page">3</div>
-  <div id="page5" class="page">Let's Go</div>
+  <div id="lets-go" class="page">Let's go, User!</div>
   <div id="finalPage" class="page">
     <h1>Top Taylor Swift Albums</h1>
     <div id="albums"></div>
   </div>
 
   <script>
-    // Function to handle page transitions
+    async function fetchAndDisplayUserName() {
+      try {
+        const response = await fetch('/api/user-profile');
+        if (!response.ok) throw new Error('Failed to fetch user profile');
+        
+        const userData = await response.json();
+        const displayName = userData.displayName || "User";
+        
+        const letsGoElement = document.getElementById('lets-go');
+        letsGoElement.innerText = `Let's go, ${displayName}!`;
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    }
+
     function startSequence() {
-      const pages = ["page1", "page2", "page3", "page4", "page5", "finalPage"];
+      const pages = ["page1", "page2", "page3", "page4", "lets-go", "finalPage"];
       let currentPage = 0;
 
       const nextPage = () => {
@@ -37,7 +50,9 @@
         if (currentPage < pages.length) {
           document.getElementById(pages[currentPage]).classList.add("visible");
 
-          // Load albums when reaching the final page
+          if (pages[currentPage] === "lets-go") {
+            fetchAndDisplayUserName();
+          }
           if (pages[currentPage] === "finalPage") {
             fetchAndDisplayAlbums();
           } else {
@@ -49,13 +64,12 @@
       setTimeout(nextPage, 800);
     }
 
-    // Fetch and display albums on the final page
     async function fetchAndDisplayAlbums() {
       try {
         const response = await fetch('/api/top-taylor-swift-albums');
         const albums = await response.json();
         const albumsContainer = document.getElementById('albums');
-        albumsContainer.innerHTML = ''; // Clear existing content
+        albumsContainer.innerHTML = ''; 
 
         albums.forEach(album => {
           const albumElement = document.createElement('div');
