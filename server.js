@@ -230,7 +230,10 @@ app.get('/api/top-taylor-swift-albums', async (req, res) => {
     });
 
     // Step 8: Convert uniqueAlbums object to array and sort by count
-    const sortedAlbums = Object.values(uniqueAlbums).sort((a, b) => b.count - a.count);
+    const sortedAlbums = Object.values(uniqueAlbums)
+    .filter(album => album.count > 0)    // Exclude albums with count 0
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);                         // Limit to top 5 albums
 
 
     res.json(sortedAlbums);

@@ -5,24 +5,185 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Page Sequence with Album Display</title>
   <style>
-    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    .page { display: none; text-align: center; }
-    .visible { display: block; }
-    #albums { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .album { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    /* Add styles for popup */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none; /* Hidden by default */
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup-content {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      width: 500px;
+      max-width: 90%;
+      text-align: center;
+      box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    .popup-content h2 {
+      margin-top: 0;
+    }
+    .popup-album-image {
+  width: 100%; /* Full width of the popup */
+  height: auto;
+  margin-top: 20px;
+  border-radius: 10px;
+}
+
+    .popup-close-btn {
+      background-color: #f87984;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+
+    .popup-close-btn:hover {
+      background-color: #DAB1DA;
+    }
+    
+
+
+    body { font-family: Arial, sans-serif; justify-content: center; align-items: center; height: 100vh; margin: 0; cursor: crosshair;}
+    .page { 
+      display: none; 
+      width: 100vw;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+     }
+    .visible { display: flex; }
+    #page1 {
+      /*background-image: url(`erastourback.jpg`); /* Make sure the path is correct */
+      background-image: url('erastourback.jpg');
+      background-size: cover;
+      background-position: center;
+      text-align: center;
+      /*background-color: pink; /* Fallback color */
+    }
+        /* Paper-like shape for the message */
+        .paper {
+        background-color: #f8f4e3;
+        font-family: 'Courier New';
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        max-width: 50%;
+        /*margin-bottom: 20px;*/
+        color: #333;
+        text-align: center;
+    }
+    /* Make the first paragraph bold */
+.paper p:first-of-type {
+    font-weight: bold;
+}
+
+/* Make the first paragraph bold */
+.paper p:nth-of-type(2) {
+    font-weight: bold;
+}
+
+    .ready-text {
+        font-family: 'Arial Black';
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-size: 1.2em;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 1em;
+        font-family:'Brush Script MT';
+        font-weight: bold;
+        color: #fff;
+        background-color: #f87984; /* Spotify green for a nice touch */
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    button:hover {
+        background-color: #DAB1DA;
+    }
+    /*
+    #albums { max-width: 600px; margin: 0 auto; padding: 20px;}
+    .album { display: flex; }
     .album-name { font-weight: bold; }
+    .album img {
+  width: 100vw; /* Full viewport width */ /*
+  height: auto; /* Maintain aspect ratio *//*
+  display: block; /* Removes unwanted inline space *//*
+}*/
+
+#albums {
+  display: flex;
+  flex-direction: column; /* Arrange sections vertically */
+  height: 100%; /* Full height of the page */
+  width: 100%; /* Full width of the page */
+}
+
+.album-section {
+  flex: 1; /* Equal height for all sections */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #ddd; /* Optional: for visual separation */
+}
+
+.album-section img {
+  max-height: 80%; /* Limit image size within the section */
+  max-width: 80%; /* Maintain aspect ratio */
+  border-radius: 10px; /* Optional: rounded corners */
+}
+
+
+
+
   </style>
 </head>
 <body>
-  <div id="page1" class="page visible">Are you ready? <button onclick="startSequence()">Yes</button></div>
+  <div id="page1" class="page visible"> 
+    <div class="paper">
+      <p>WHAT IS YOUR TOP 5 ERAS</p>
+      <p>I know you have your top 5 eras, or you
+         are like me and can't rank them, and you 
+         have several eras tied for third place. 
+         Well, don't worry. I'll do the hard work
+          and get your top songs to give you your 
+          top 5 eras. </p>
+      <div class="ready-text">Are you ready for it?</div>
+      <button onclick="startSequence()">just say, "Yes"</button>
+    </div>
+  </div>
   <div id="page2" class="page">1</div>
   <div id="page3" class="page">2</div>
   <div id="page4" class="page">3</div>
-  <div id="lets-go" class="page">Let's go, User!</div>
+  <div id="lets-go" class="page">Let's Go!</div>
   <div id="finalPage" class="page">
-    <h1>Top Taylor Swift Albums</h1>
     <div id="albums"></div>
   </div>
+
+  <!-- Popup overlay and content -->
+  <div id="popup" class="popup-overlay">
+    <div class="popup-content">
+      <h2>Your Top ERAS is </h2>
+      <img id="popupAlbumImage" class="popup-album-image" alt="Top Album Cover">
+      <p id="topAlbumText">Your top album is...</p> 
+      <button class="popup-close-btn" onclick="closePopup()">Close</button>
+    </div>
+  </div>
+
 
   <script>
     async function fetchAndDisplayUserName() {
@@ -33,8 +194,7 @@
         const userData = await response.json();
         const displayName = userData.displayName || "User";
         
-        const letsGoElement = document.getElementById('lets-go');
-        letsGoElement.innerText = `Let's go, ${displayName}!`;
+        document.getElementById('lets-go').innerText = `Let's go, ${displayName}!`;
       } catch (error) {
         console.error('Error fetching user profile:', error);
       }
@@ -48,13 +208,18 @@
         document.getElementById(pages[currentPage]).classList.remove("visible");
         currentPage++;
         if (currentPage < pages.length) {
-          document.getElementById(pages[currentPage]).classList.add("visible");
+          const nextElement = document.getElementById(pages[currentPage]);
+          nextElement.classList.add("visible");
+          //document.getElementById(pages[currentPage]).classList.add("visible");
 
           if (pages[currentPage] === "lets-go") {
+            // Set initial text for "Let's go, User!" while fetching name
+            nextElement.innerText = "Let's go, User!";
             fetchAndDisplayUserName();
           }
           if (pages[currentPage] === "finalPage") {
             fetchAndDisplayAlbums();
+            showPopup(); // Show popup on the final page
           } else {
             setTimeout(nextPage, 800);
           }
@@ -63,7 +228,27 @@
 
       setTimeout(nextPage, 800);
     }
+    function displayTopAlbumInPopup(topAlbum) {
+      const imageName = topAlbum.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+      const popupAlbumImage = document.getElementById("popupAlbumImage");
+      //to get cardigan change images to cardigan
+      popupAlbumImage.src = `images/${imageName}.jpeg`; // Set the image source for the top album
+      popupAlbumImage.alt = topAlbum.name; // Set alt text to the album name
 
+        // Set the album name in the popup text
+  const topAlbumText = document.getElementById("topAlbumText");
+  topAlbumText.innerText = `${topAlbum.name}`; // Display the album name in the popup text
+
+      showPopup(); // Display the popup
+    }
+    
+    function showPopup() {
+      document.getElementById("popup").style.display = "flex"; // Display the popup
+    }
+    
+    function closePopup() {
+      document.getElementById("popup").style.display = "none"; // Hide the popup
+    }
     async function fetchAndDisplayAlbums() {
       try {
         const response = await fetch('/api/top-taylor-swift-albums');
@@ -72,11 +257,51 @@
         albumsContainer.innerHTML = ''; 
 
         albums.forEach(album => {
-          const albumElement = document.createElement('div');
-          albumElement.className = 'album';
-          albumElement.innerHTML = `<span class="album-name">${album.name}</span> <span class="album-count">Count: ${album.count}</span>`;
-          albumsContainer.appendChild(albumElement);
+          //const albumElement = document.createElement('div');
+         // albumElement.className = 'album';
+         const albumSection = document.createElement('div'); 
+         albumSection.className = 'album-section';
+
+
+          // Convert album name to a filename-friendly format
+          const imageName = album.name
+            .toLowerCase()
+            .replace(/\s+/g, '-')         // Replace spaces with hyphens
+            .replace(/[^\w-]/g, '');       // Remove special characters
+
+
+          // Create an image element for the album cover
+          const albumImage = document.createElement('img');
+          //albumImage.src = `images/${imageName}.jpeg`;
+          
+          const imageSrc = `images/${imageName}.jpeg`;
+
+          //const imageSrc = url('aboutmetext.jpg');
+
+          //albumImage.src = `evermore.jpeg`;
+          //console.log(albumImage.src);
+         // console.log("Image source path:", imageSrc); // Add this line to see the path in the console
+          
+          //albumImage.alt = album.name;
+          albumImage.src = imageSrc;
+          albumImage.alt = album.name;
+
+          albumSection.appendChild(albumImage);
+          albumsContainer.appendChild(albumSection);
+
+          //albumImage.className = 'album-image';
+          //albumImage.style.width = '100%'; // Optional: adjust as needed for layout
+
+          //albumElement.innerHTML = `<span class="album-name">${album.name}</span> <span class="album-count">Count: ${album.count}</span>`;
+         
+          // albumElement.appendChild(albumImage);
+         // albumsContainer.appendChild(albumElement);
         });
+
+        const topAlbum = albums[0];
+        if (topAlbum) {
+          displayTopAlbumInPopup(topAlbum);
+        }
       } catch (error) {
         console.error('Error fetching albums:', error);
       }
